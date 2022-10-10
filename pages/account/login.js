@@ -1,83 +1,88 @@
-import { useState } from "react";
-import { useRouter } from "next/router";
-import useAuth from "../../hooks/useAuth";
+import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { Button, Input, Spacer, Grid, Text } from '@nextui-org/react'
+import useAuth from '../../hooks/useAuth'
 import Page from '@/components/page'
 import Section from '@/components/section'
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+	const [email, setEmail] = useState('')
+	const [password, setPassword] = useState('')
+	const [error, setError] = useState(null)
 
-  const { setUser } = useAuth();
+	const { setUser } = useAuth()
 
-  const router = useRouter();
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // call the API route
+	const router = useRouter()
+	const handleSubmit = async (e) => {
+		e.preventDefault()
+		// call the API route
 
-    const res = await fetch("http://127.0.0.1:5000/api/tokens", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    if (res.ok) {
-      const user = await res.json();
-      setUser(user);
-      router.push("/");
-    } else {
-      const errData = await res.json();
-      setError(errData);
-    }
-  };
+		const res = await fetch('http://127.0.0.1:5000/api/tokens', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ email, password }),
+		})
+		if (res.ok) {
+			const user = await res.json()
+			setUser(user)
+			router.push('/')
+		} else {
+			const errData = await res.json()
+			setError(errData)
+		}
+	}
 
-  return (
-
+	return (
 		<Page>
-		<Section>
-    <div className="flex flex-col justify-center items-center h-full">
-      <h2 className=" text-orange-500 font-bold text-lg">Login</h2>
-      {error && (
-        <div className="border-2 text-red-700 font-bold p-5">
-          {error.description}
-        </div>
-      )}
-      <div>
-        <form
-          className=" max-w-md flex flex-col justify-center items-center"
-          onSubmit={handleSubmit}
-        >
-          <label className="block">
-            <span className="text-gray-700">Email</span>
-            <input
-              type="email"
-              className="mt-1 block w-full"
-              placeholder="your email"
-              required
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-            />
-          </label>
-          <label className="block">
-            <span className="text-gray-700">Password</span>
-            <input
-              type="password"
-              placeholder="your password"
-              required
-              className="mt-1 block w-full"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-          </label>
-          <button className=" bg-orange-500 text-white p-2 m-3 w-full rounded-lg">
-            Log in
-          </button>
-        </form>
-      </div>
-    </div>
-		</Section>
-		</Page>
-  );
-};
+			<Section>
+				<Grid.Container gap={1}>
+					<Grid>
+						<Text
+							h1
+							size={20}
+							css={{
+								textGradient: '45deg, $blue600 -20%, $pink600 50%',
+							}}
+							weight='bold'
+						>
+							Login
+						</Text>
+						{error && (
+							<div className='border-2 p-5 font-bold text-red-700'>
+								{error.description}
+							</div>
+						)}
+						<form
+							className=' flex max-w-md flex-col items-center justify-center'
+							onSubmit={handleSubmit}
+						>
+							<Spacer y={1.5} />
 
-export default Login;
+							<Input
+								width="100%"
+								animated={false}
+								labelPlaceholder='Email'
+								onChange={(e) => setEmail(e.target.value)}
+								value={email}
+							/>
+							<Spacer y={1.5} />
+							<Input.Password
+								animated={false}
+								labelPlaceholder='Password'
+								initialValue='nextui123'
+								onChange={(e) => setPassword(e.target.value)}
+								value={password}
+							/>
+
+							<Button bordered color='primary' auto>
+								Login
+							</Button>
+						</form>
+					</Grid>
+				</Grid.Container>
+			</Section>
+		</Page>
+	)
+}
+
+export default Login
